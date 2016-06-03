@@ -1,0 +1,65 @@
+
+A --> Before patch
+B --> After patch
+ 
+****************************************************************************
+ 
+diff A/pjproject-2.5/build.mak.in B/pjproject-2.5/build.mak.in
+--- A/pjproject-2.5/build.mak.in
++++ B/pjproject-2.5/build.mak.in
+
+ APP_THIRD_PARTY_LIB_FILES += $(PJ_DIR)/third_party/lib/libresample.$(SHLIB_SUFFIX).$(PJ_VERSION_MAJOR) $(PJ_DIR)/third_party/lib/libresample.$(SHLIB_SUFFIX)
+ endif
+ endif
++ 
++APP_THIRD_PARTY_LIBS += -lg729codec-$(TARGET_NAME)
++APP_THIRD_PARTY_LIB_FILES += $(PJ_DIR)/third_party/lib/libg729codec-$(LIB_SUFFIX)
++
+ ifneq (@ac_no_gsm_codec@,1)
+ ifeq (@ac_external_gsm@,1)
+ # External GSM library
+
+****************************************************************************
+ 
+diff A/pjproject-2.5/pjmedia/build/Makefile B/pjproject-2.5/pjmedia/build/Makefile
+--- A/pjproject-2.5/pjmedia/build/Makefile
++++ B/pjproject-2.5/pjmedia/build/Makefile
+
+ 			h263_packetizer.o h264_packetizer.o \
+ 			$(OS_OBJS) $(M_OBJS) $(CC_OBJS) $(HOST_OBJS) \
+ 			ipp_codecs.o $(CODEC_OBJS) \
+-                        g7221_sdp_match.o amr_sdp_match.o
++                        g7221_sdp_match.o amr_sdp_match.o g729.o
+ export PJMEDIA_CODEC_CFLAGS += $(_CFLAGS) $(GSM_CFLAGS) $(SPEEX_CFLAGS) \
+ 			$(ILBC_CFLAGS) $(IPP_CFLAGS) $(G7221_CFLAGS)
+ 			 
+****************************************************************************
+ 
+diff A/pjproject-2.5/pjmedia/include/pjmedia-codec.h B/pjproject-2.5/pjmedia/include/pjmedia-codec.h
+--- A/pjproject-2.5/pjmedia/include/pjmedia-codec.h
++++ B/pjproject-2.5/pjmedia/include/pjmedia-codec.h
+
+ #include <pjmedia-codec/l16.h>
+ #include <pjmedia-codec/ffmpeg_vid_codecs.h>
++#include <pjmedia-codec/g729.h>
+ #include <pjmedia-codec/gsm.h>
+ #include <pjmedia-codec/speex.h>
+ #include <pjmedia-codec/ilbc.h>
+  			 
+****************************************************************************
+ 
+ diff A/pjproject-2.5/pjmedia/src/pjmedia-codec/audio_codecs.c B/pjproject-2.5/pjmedia/src/pjmedia-codec/audio_codecs.c
+--- A/pjproject-2.5/pjmedia/src/pjmedia-codec/audio_codecs.c
++++ B/pjproject-2.5/pjmedia/src/pjmedia-codec/audio_codecs.c
+
+ #endif /* PJMEDIA_HAS_ILBC_CODEC */
+ 
++    status = pjmedia_codec_g729_init(endpt);
++    if (status != PJ_SUCCESS)
++	return status;
++
+ #if PJMEDIA_HAS_GSM_CODEC
+     /* Register GSM */
+     status = pjmedia_codec_gsm_init(endpt);
+
+****************************************************************************
