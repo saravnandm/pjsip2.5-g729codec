@@ -63,3 +63,13 @@ diff A/pjproject-2.5/pjmedia/include/pjmedia-codec.h B/pjproject-2.5/pjmedia/inc
      status = pjmedia_codec_gsm_init(endpt);
 
 ****************************************************************************
+
+diff A/pjproject-2.5/third_party/build/Makefile B/pjproject-2.5/third_party/build/Makefile
+--- A/pjproject-2.5/third_party/build/Makefile
++++ B/pjproject-2.5/third_party/build/Makefile
+
+-DIRS = 
++DIRS = bcg729
+ 
+ include ../../build.mak
+ include $(PJDIR)/build/common.mak
